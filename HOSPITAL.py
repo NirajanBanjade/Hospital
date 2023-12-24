@@ -147,10 +147,10 @@ class hospital:
         Delete=Button(buttonframe, text="Delete",font=("arial",10,"bold"),bg="red",fg="white",width=24,command=self.idelete)
         Delete.grid(row=0,column=3)
 
-        clear=Button(buttonframe, text="Clear",font=("arial",10,"bold"),bg="red",fg="white",width=24)
+        clear=Button(buttonframe, text="Clear",font=("arial",10,"bold"),bg="red",fg="white",width=24,command=self.clearData)
         clear.grid(row=0,column=4)
 
-        exit=Button(buttonframe, text="Exit",font=("arial",10,"bold"),bg="red",fg="white",width=24)
+        exit=Button(buttonframe, text="Exit",font=("arial",10,"bold"),bg="red",fg="white",width=24,command=self.exit)
         exit.grid(row=0,column=5)
 
        
@@ -244,9 +244,10 @@ class hospital:
         cur=db.cursor()
         cur.execute(query)
         rows=cur.fetchall()
+        self.hospital_table.delete(*self.hospital_table.get_children())
         for i in rows:
             self.hospital_table.insert("",END,values=i)
-            db.commit()
+        db.commit()
         db.close()
         
     def cursor_focus(self,event=""):
@@ -329,6 +330,7 @@ class hospital:
             database="tester"
         )
         mycursor=db.cursor()
+
         query="delete from Hospital where PatientId=%s"
         value=(self.patientId.get(),)
         if self.patientId.get() !="":
@@ -336,20 +338,34 @@ class hospital:
             db.commit()
             db.close()
             self.fetch()
-            messagebox.showinfo("","Deleted","Successfully!!")
+            messagebox.showinfo("Deleted","Successfully!!")
         else:
             messagebox.showerror("","Empty data!")
-
-
-
-                
-
-
+    
+    def clearData(self):
+        self.disease.set("")
+        self.namePatient.set("") 
+        self.agePatient.set("")
+        self.weightPatient.set("")
+        self.Bp.set("")
+        self.nameofTablet.set("")
+        self.cabinNum.set("")
+        self.numDoses.set("")
+        self.patientId.set("")
+        self.entryDate.set("")
+        self.exitDate.set("")
+        self.dob.set("")
+        self.address.set("")
+        self.prescribedBy.set("")
+        self.prescription.delete("1.0",END)
+    
+    def exit(self):
+        iExit=messagebox.askyesno("Prescription Management","Confirm you want to exit?")
+        if iExit>0:
+            self.root.destroy()
+            return
                                      
-                                 
-
-        
-
+            
 hosp=hospital()
 mainloop()
 
